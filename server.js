@@ -3,6 +3,7 @@ const fs = require('fs');
 const os = require('os');
 
 const server = http.createServer((req, res) => {
+    // Log visitor info on /updateUser
     if (req.method === 'GET' && req.url === '/updateUser') {
         const timestamp = new Date().toISOString();
         const logEntry = `Visitor at ${timestamp}\n`;
@@ -16,6 +17,7 @@ const server = http.createServer((req, res) => {
         });
     }
     else if (req.method === 'GET' && req.url === '/saveLogs') {
+        // Read the visitors.log and save it to logs.txt
         fs.readFile('visitors.log', (err, data) => {
             if (err) return res.end("Error reading log");
 
@@ -26,6 +28,7 @@ const server = http.createServer((req, res) => {
         });
     }
     else if (req.method === 'POST' && req.url === '/backupLogs') {
+        // Backup the visitors.log to backup_logs.txt
         fs.copyFile('visitors.log', 'backup_logs.txt', (err) => {
             if (err) res.end("Error backing up logs");
             else res.end("Logs backed up successfully");
@@ -33,12 +36,14 @@ const server = http.createServer((req, res) => {
     }
 
     else if (req.method === 'GET' && req.url === '/clearLogs') {
+        // Clear the visitors.log file
         fs.writeFile('visitors.log', '', (err) => {
             if (err) res.end("Error clearing logs");
             else res.end("Logs cleared successfully");
         });
     }
     else if (req.method === 'GET' && req.url === '/serverInfo') {
+        // Return server information as JSON
         const info = {
             hostname: os.hostname(),
             platform: os.platform(),
